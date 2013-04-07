@@ -1,46 +1,108 @@
 using System;
 using System.IO;
 
-namespace riddiskkonsole
+namespace Riddisk
 {
-	public class RecursiveFileSearch
+	public class RiddiskKonsole
 	{
-		static System.Collections.Specialized.StringCollection log = new System.Collections.Specialized.StringCollection();
+		/// <summary>
+		/// List of logged files
+		/// </summary>
+		static System.Collections.Specialized.StringCollection log;
 		
+		/// <summary>
+		/// Flag if restricted access files were already written to output, used no to do it twice
+        /// like were it's finishing and user clicks Ctrl+C
+		/// </summary>
+		static bool filesAlreadyWritten;
+		
+		static bool followSymbolicLinks;
+		
+		/// <summary>
+		/// Writes the out restriced files from log list.
+		/// </summary>
+		static void WriteOutRestricedFiles()
+		{
+			if (!filesAlreadyWritten) 
+			{	
+				filesAlreadyWritten = true;
+				Console.WriteLine ("Files with restricted access:");
+				foreach (string s in log) {
+					Console.WriteLine (s);
+				}				
+			}
+		}
+		
+		/// <summary>
+		/// Determines if given path is a reparse point (link)
+		/// </summary>
+		/// <returns><c>true</c> if specified path is a reparse point; otherwise, <c>false</c>.</returns>
+		/// <param name="path">Path to file/directory</param>
+		static bool IsReparsePoint(string path)
+		{
+			FileAttributes attributes = File.GetAttributes(path);
+			return ((attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint);
+		}
+		
+		/// <summary>
+		/// The usage string.
+		/// </summary>
+		static string usageString = "usage: riddisk-konsole.exe [-l] path; " + 
+			Environment.NewLine + Environment.NewLine +
+			"-l: follow symbolic links";
+		
+		/// <summary>
+		/// The entry point of the program, where the program control starts and ends.
+		/// </summary>
+		/// <param name="args">The command-line arguments.</param>
 		static void Main(string[] args)
 		{
+			filesAlreadyWritten = false;
+			followSymbolicLinks = false;
+			string path = string.Empty;
+			
+			log = new System.Collections.Specialized.StringCollection();
+			
+			// Register Ctrl+C handling
 			Console.CancelKeyPress += delegate {
-				Console.WriteLine("Files with restricted access:");
-				foreach (string s in log)
-				{
-					Console.WriteLine(s);
-				}
+				WriteOutRestricedFiles();
 			};
 
-
-			string path = string.Empty;
-
-			if (args.Length < 1) {
-				Console.WriteLine ("usage: riddisk-konsole.exe path");
-				return;
-			} else {
+			switch (args.Length) 
+			{
+			case 1:
 				path = args[0];
+				break;
+			case 2:
+				if (args[0] == "-l")
+				{
+					followSymbolicLinks = true;
+					path = args[1];
+					break;
+				}
+				goto default;
+			default:
+				Console.WriteLine (usageString);
+				return;
 			}
 
 			System.IO.DirectoryInfo rootDir = new DirectoryInfo (path);
 			WalkDirectoryTree(rootDir);
 
 			// Write out all the files that could not be processed.
-			Console.WriteLine("Files with restricted access:");
-			foreach (string s in log)
-			{
-				Console.WriteLine(s);
-			}
+			WriteOutRestricedFiles ();
+			/*
+#if DEBUG			
 			// Keep the console window open in debug mode.
 			Console.WriteLine("Press any key");
 			Console.ReadKey();
+#endif		*/	
 		}
 		
+		/// <summary>
+		/// Walks the directory tree & reads files.
+		/// </summary>
+		/// <param name="root">Root folder.</param>
 		static void WalkDirectoryTree(System.IO.DirectoryInfo root)
 		{
 			System.IO.FileInfo[] files = null;
@@ -72,12 +134,12 @@ namespace riddiskkonsole
 			if (files != null)
 			{
 				foreach (System.IO.FileInfo fi in files)
-				{
-					// In this example, we only access the existing FileInfo object. If we 
-					// want to open, delete or modify the file, then 
-					// a try-catch block is required here to handle the case 
-					// where the file has been deleted since the call to TraverseTree().
-//					Console.WriteLine(fi.FullName);
+				{	
+					// If not following symbolic links & finding symbolic link: omit!
+					if (!followSymbolicLinks && IsReparsePoint(fi.FullName))
+					{
+						continue;
+					}
 
 					try
 					{
@@ -101,8 +163,16 @@ namespace riddiskkonsole
 				
 				foreach (System.IO.DirectoryInfo dirInfo in subDirs)
 				{
-					// Resursive call for each subdirectory.
-					WalkDirectoryTree(dirInfo);
+//					Console.Write(String.Format ("Dir {0}: ", dirInfo.FullName));
+					// If following symbolic links or this not & this is a link.
+					//if (followSymbolicLinks || (!followSymbolicLinks && !IsReparsePoint(dirInfo.FullName)))
+					bool isreparse = IsReparsePoint(dirInfo.FullName);
+					bool follow = followSymbolicLinks;
+					
+						// Resursive call for each subdirectory.
+					
+					if (follow || (!follow && !isreparse))
+						WalkDirectoryTree(dirInfo);
 				}
 			}  
 		}

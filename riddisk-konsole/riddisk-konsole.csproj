@@ -9,6 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>riddiskkonsole</RootNamespace>
     <AssemblyName>riddisk-konsole</AssemblyName>
+    <StartupObject>Riddisk.RiddiskKonsole</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
