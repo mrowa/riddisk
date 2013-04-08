@@ -29,7 +29,7 @@ namespace Riddisk
 				Console.WriteLine ("Files with restricted access:");
 				foreach (string s in log) {
 					Console.WriteLine (s);
-				}				
+				}
 			}
 		}
 		
@@ -133,18 +133,28 @@ namespace Riddisk
 
 			if (files != null)
 			{
-				foreach (System.IO.FileInfo fi in files)
-				{	
+
+                Console.Write (String.Format ("{0}/{1} files", 0, files.Length));
+
+                for (int i = 0; i < files.Length; ++i)
+				{
+                    System.IO.FileInfo fi = files[i];
+
 					// If not following symbolic links & finding symbolic link: omit!
 					if (!followSymbolicLinks && IsReparsePoint(fi.FullName))
 					{
 						continue;
 					}
 
+                    // Reading.
 					try
 					{
 						Stream stream = new System.IO.FileStream(fi.FullName, FileMode.Open, FileAccess.Read);
 						stream.CopyTo(Stream.Null);
+
+                        // going back to the beginning of line.
+                        Console.CursorLeft = 0;
+                        Console.Write (String.Format ("{0}/{1} files", i+1, files.Length));
 					}
 					catch (IOException ioe)
 					{
@@ -157,6 +167,9 @@ namespace Riddisk
 						log.Add (uae.Message);
 					}
 				}
+
+                // Overwrite line with count of files ;)
+                Console.CursorLeft = 0;
 				
 				// Now find all the subdirectories under this directory.
 				subDirs = root.GetDirectories();
