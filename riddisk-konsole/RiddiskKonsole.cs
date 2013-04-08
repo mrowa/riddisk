@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Riddisk
+namespace Riddisk.Konsole
 {
 	public class RiddiskKonsole
 	{
@@ -16,6 +16,9 @@ namespace Riddisk
 		/// </summary>
 		static bool filesAlreadyWritten;
 		
+        /// <summary>
+        /// Flag if we're following symbolic links.
+        /// </summary>
 		static bool followSymbolicLinks;
 		
 		/// <summary>

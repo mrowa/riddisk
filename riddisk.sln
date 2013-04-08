@@ -9,6 +9,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.txt = LICENSE.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "riddisk-core", "riddisk-core\riddisk-core.csproj", "{CE9DD17E-3AE4-4A23-BB1B-91FF938FC35D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "riddisk-tests", "riddisk-tests\riddisk-tests.csproj", "{7FB50D97-A46B-4370-86BF-E9B267E12DA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,6 +23,14 @@ Global
 		{6D3B6D4D-0BDB-4FF4-87AE-BB944565DEA8}.Debug|x86.Build.0 = Debug|x86
 		{6D3B6D4D-0BDB-4FF4-87AE-BB944565DEA8}.Release|x86.ActiveCfg = Release|x86
 		{6D3B6D4D-0BDB-4FF4-87AE-BB944565DEA8}.Release|x86.Build.0 = Release|x86
+		{7FB50D97-A46B-4370-86BF-E9B267E12DA8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7FB50D97-A46B-4370-86BF-E9B267E12DA8}.Debug|x86.Build.0 = Debug|Any CPU
+		{7FB50D97-A46B-4370-86BF-E9B267E12DA8}.Release|x86.ActiveCfg = Release|Any CPU
+		{7FB50D97-A46B-4370-86BF-E9B267E12DA8}.Release|x86.Build.0 = Release|Any CPU
+		{CE9DD17E-3AE4-4A23-BB1B-91FF938FC35D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE9DD17E-3AE4-4A23-BB1B-91FF938FC35D}.Debug|x86.Build.0 = Debug|Any CPU
+		{CE9DD17E-3AE4-4A23-BB1B-91FF938FC35D}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE9DD17E-3AE4-4A23-BB1B-91FF938FC35D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
